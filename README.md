@@ -26,5 +26,5 @@ Feature flags allow partial or experimental features to be enabled at your own r
 They can be enabled by setting the corresponding property to `true`.
 
 |Property|Description|
-|--------|-----------|
+|--------|-----------|f
 |`event-bridge.feature-flags.rhoas-enabled`|Enables integration with Managed Kafka|
