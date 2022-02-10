@@ -6,7 +6,7 @@ This repository stores the code for the bridge project.
 
 ## Getting Started
 ff
-Before starting, please add yourself to the #dev Google Chat Room and be sure to read the team onboarding documentation.
+Before starting, please add yourself to the #devbbb Google Chat Room and be sure to read the team onboarding documentation.
 
 ## Development Environment
 
