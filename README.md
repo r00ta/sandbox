@@ -4,7 +4,7 @@
 
 This repository stores the code for the bridge project.
 
-## Getting Started
+## Getting Startedfdsafd
 
 Before starting, please add yourself to the #dev Google Chat Room and be sure to read the team onboarding documentation.
 
