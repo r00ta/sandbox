@@ -31,8 +31,6 @@ import io.quarkiverse.hibernate.types.json.JsonTypes;
                 query = "from ConnectorEntity c where c.name=:name and c.processor.id=:processorId"),
         @NamedQuery(name = "CONNECTORENTITY.findByProcessorId",
                 query = "from ConnectorEntity c where c.processor.id=:processorId"),
-        @NamedQuery(name = "CONNECTORENTITY.findUnprocessed",
-                query = "from ConnectorEntity c where c.status != c.desiredStatus and c.workerId is null"),
 })
 @Entity
 @Table(name = "CONNECTOR")
@@ -51,9 +49,6 @@ public class ConnectorEntity { // called -Entity to avoid clash with Connector R
     // ID returned by MC service
     @Column(name = "connector_external_id")
     private String connectorExternalId;
-
-    @Column(name = "worker_id")
-    private String workerId;
 
     @Column(nullable = false, name = "name")
     private String name;
@@ -109,14 +104,6 @@ public class ConnectorEntity { // called -Entity to avoid clash with Connector R
 
     public void setConnectorExternalId(String connectorExternalId) {
         this.connectorExternalId = connectorExternalId;
-    }
-
-    public String getWorkerId() {
-        return workerId;
-    }
-
-    public void setWorkerId(String workerId) {
-        this.workerId = workerId;
     }
 
     public String getName() {
@@ -243,7 +230,6 @@ public class ConnectorEntity { // called -Entity to avoid clash with Connector R
                 ", status=" + status +
                 ", desiredStatus=" + desiredStatus +
                 ", connectorExternalId='" + connectorExternalId + '\'' +
-                ", workerId='" + workerId + '\'' +
                 ", name='" + name + '\'' +
                 ", definition=" + definition +
                 ", processor=" + processor +

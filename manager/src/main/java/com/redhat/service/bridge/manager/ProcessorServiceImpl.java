@@ -32,7 +32,6 @@ import com.redhat.service.bridge.infra.models.processors.ProcessorDefinition;
 import com.redhat.service.bridge.manager.api.models.requests.ProcessorRequest;
 import com.redhat.service.bridge.manager.api.models.responses.ProcessorResponse;
 import com.redhat.service.bridge.manager.connectors.ConnectorsService;
-import com.redhat.service.bridge.manager.connectors.Events;
 import com.redhat.service.bridge.manager.dao.ProcessorDAO;
 import com.redhat.service.bridge.manager.models.Bridge;
 import com.redhat.service.bridge.manager.models.ConnectorEntity;
@@ -42,8 +41,6 @@ import com.redhat.service.bridge.manager.providers.InternalKafkaConfigurationPro
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.vertx.mutiny.core.eventbus.EventBus;
-
-import static com.redhat.service.bridge.manager.connectors.Events.CONNECTOR_CREATED_EVENT;
 
 @ApplicationScoped
 public class ProcessorServiceImpl implements ProcessorService {
@@ -75,6 +72,9 @@ public class ProcessorServiceImpl implements ProcessorService {
 
     @Inject
     ShardService shardService;
+
+    @Inject
+    ProcessorWorker processorWorker;
 
     @Transactional
     @Override
@@ -114,15 +114,16 @@ public class ProcessorServiceImpl implements ProcessorService {
         newProcessor.setName(processorRequest.getName());
         newProcessor.setSubmittedAt(ZonedDateTime.now());
         newProcessor.setStatus(ManagedEntityStatus.ACCEPTED);
+        newProcessor.setDesiredStatus(ManagedEntityStatus.PREPARING);
         newProcessor.setBridge(bridge);
         newProcessor.setShardId(shardService.getAssignedShardId(newProcessor.getId()));
 
         ProcessorDefinition definition = new ProcessorDefinition(requestedFilters, requestedTransformationTemplate, requestedAction, resolvedAction);
         newProcessor.setDefinition(definitionToJsonNode(definition));
 
-        Optional<ConnectorEntity> persist = createProcessorConnectorEntity(newProcessor, actionProvider, resolvedAction);
+        createProcessorConnectorEntity(newProcessor, actionProvider, resolvedAction);
 
-        persist.ifPresent(c -> eventBus.requestAndForget(CONNECTOR_CREATED_EVENT, c));
+        processorWorker.accept(newProcessor);
 
         return newProcessor;
     }
@@ -176,10 +177,11 @@ public class ProcessorServiceImpl implements ProcessorService {
 
     @Override
     public void deleteProcessor(String bridgeId, String processorId, String customerId) {
-        List<ConnectorEntity> connectorEntitiesToBeDeleted = updateProcessorConnectorForDeletionOnDB(bridgeId, processorId, customerId);
+        List<ConnectorEntity> connectorEntitiesToBeDeleted = updateProcessorConnectorForDeletionOnDB(bridgeId, processorId, customerId); // TODO: review here
+        Processor processor = processorDAO.findByIdBridgeIdAndCustomerId(processorId, bridgeId, customerId);
         connectorEntitiesToBeDeleted.forEach(c -> {
             LOGGER.info("Firing deletion event for entity: " + c);
-            eventBus.requestAndForget(Events.CONNECTOR_DELETED_EVENT, c);
+            processorWorker.deprovision(processor);
         });
     }
 

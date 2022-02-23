@@ -3,7 +3,6 @@ package com.redhat.service.bridge.manager.dao;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -100,20 +99,5 @@ public class ConnectorsDAOTest {
         ConnectorEntity c = createPersistConnector(p, "connector", ConnectorStatus.READY, ConnectorStatus.READY);
 
         assertThat(connectorsDAO.findByProcessorIdAndName(p.getId(), c.getName())).isEqualTo(c);
-    }
-
-    @Test
-    public void findUnprocessed() {
-        Bridge b = createBridge();
-
-        Processor p1 = createProcessor(b, "availableConnectorProcessor");
-        createPersistConnector(p1, "availableConnector", ConnectorStatus.READY, ConnectorStatus.READY);
-
-        Processor p2 = createProcessor(b, "requestedConnectorProcessor");
-        ConnectorEntity requestedConnector = createPersistConnector(p2, "availableConnector", ConnectorStatus.ACCEPTED, ConnectorStatus.READY);
-
-        List<ConnectorEntity> unprocessedConnectors = connectorsDAO.findUnprocessed();
-
-        assertThat(unprocessedConnectors).containsOnly(requestedConnector);
     }
 }
