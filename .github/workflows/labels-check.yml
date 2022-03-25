@@ -16,22 +16,22 @@ on:
       - 'dev/**'
 jobs:
   remove_labels:
-    if: github.event.action == 'synchronize'
-    continue-on-error: true
+    concurrency:
+      group: event-bridge-label-pr-${{ github.head_ref }}
+      cancel-in-progress: true
     permissions:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/labeler@v4
+        if: github.event.action == 'synchronize'
+        continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: true
-  label:
-    runs-on: ubuntu-latest
-    steps:
       - name: Safe to test label must be added on the pull request
-        if: ${{ github.event.action }} == 'labeled'
+        if: always()
         uses: mheap/github-action-required-labels@v1
         with:
           mode: exactly
