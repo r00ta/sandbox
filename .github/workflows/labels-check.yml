@@ -31,7 +31,6 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: true
       - name: Safe to test label must be added on the pull request
-        if: always()
         uses: mheap/github-action-required-labels@v1
         with:
           mode: exactly
