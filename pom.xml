@@ -9,22 +9,7 @@
   <packaging>pom</packaging>
 
   <name>Event Bridge</name>
-  <description>Parent module for event bridge</description>
-
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-
-         
-
-         
+  <description>Parent module for event bridge</description>         
   <inceptionYear>2021</inceptionYear>
   <organization>
     <name>Red Hat</name>
