@@ -17,6 +17,7 @@ on:
 jobs:
   remove_labels:
     if: github.event.action == 'synchronize'
+    continue-on-error: true
     permissions:
       contents: read
       pull-requests: write
@@ -27,6 +28,7 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: true
   label:
+    if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Safe to test label must be added on the pull request
