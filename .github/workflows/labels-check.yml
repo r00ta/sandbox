@@ -16,7 +16,7 @@ on:
       - 'dev/**'
 jobs:
   remove_labels:
-    if: ${{ github.event.action }} == 'synchronize'
+    if: github.event.action == 'synchronize'
     permissions:
       contents: read
       pull-requests: write
