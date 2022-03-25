@@ -7,7 +7,6 @@
   <artifactId>event-bridge</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-
   <name>Event Bridge</name>
   <description>Parent module for event bridge</description>         
   <inceptionYear>2021</inceptionYear>
