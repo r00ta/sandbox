@@ -1,0 +1,39 @@
+name: My Labels Check
+on:
+  pull_request_target:  
+    types: [opened, labeled, unlabeled, synchronize]
+    branches:
+      - main
+    paths-ignore:
+      # keep in sync with Manager-CI.yaml
+      - 'LICENSE'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - '.github/**'
+      - 'kustomize/**'
+      - 'dev/**'
+jobs:
+  remove_labels:
+    if: github.event.action == 'synchronize'
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          sync-labels: true
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Safe to test label must be added on the pull request
+        if: ${{ github.event.action }} == 'labeled'
+        uses: mheap/github-action-required-labels@v1
+        with:
+          mode: exactly
+          count: 1
+          labels: "safe to test"
