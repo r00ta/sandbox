@@ -24,15 +24,18 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v4
+      - name: Remove labels
+        uses: actions/labeler@v4
         if: github.event.action == 'synchronize'
-        continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           sync-labels: true
+      - name: Remove labels
+        if: github.event.action == 'synchronize'
+        run: |
+          echo "You pushed a new commit. Please add the label 'safe to test' again."
+          exit 1
       - name: Safe to test label must be added on the pull request
-        uses: mheap/github-action-required-labels@v1
-        with:
-          mode: exactly
-          count: 1
-          labels: "safe to test"
+        if: (github.event.action == 'labeled' || github.event.action == 'unlabeled') && contains( github.event.pull_request.labels.*.name, 'safe to test')
+        run: |
+          echo "'safe to test' label is triggering pipeline"
