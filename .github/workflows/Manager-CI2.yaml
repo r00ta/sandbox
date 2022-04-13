@@ -1,0 +1,36 @@
+name: Manager - CI
+on:
+  pull_request:
+    types: [opened, labeled, unlabeled, synchronize]
+    branches:    
+      - 'main'
+jobs:
+  event-bridge-build:
+    env:
+      FLEET_MANAGER_CONTAINER_NAME: openbridge/fleet-manager:${{ github.sha }}
+      FLEET_SHARD_MINIKUBE_CONTAINER_NAME: openbridge/fleet-shard:${{ github.sha }}
+      EXECUTOR_CONTAINER_NAME: openbridge/executor:${{ github.sha }}
+      INGRESS_CONTAINER_NAME: openbridge/ingress:${{ github.sha }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    # Security due to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+#    if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox'
+    name: Build all images and run E2E tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
+      - name: Check label
+        if: !contains(github.event.pull_request.labels.*.name, 'safe to test')
+        run: |
+          echo "Please add the label 'safe to test'"
+          exit 1
+      - name: Print operator log
+        if: always()
+        run: |
+          kubectl logs deployment/event-bridge-shard-operator -n event-bridge-operator
+      - name: Print manager log
+        if: always()
+        run: |
+          kubectl logs deployment/event-bridge -n event-bridge-manager
