@@ -24,8 +24,10 @@ public class AwsLambdaActionResolver implements AwsLambdaAction,
         resolvedAction.setParameters(action.getParameters().deepCopy());
         resolvedAction.setType(KafkaTopicAction.TYPE);
 
-        String connectorTopicName = gatewayConfiguratorService.getConnectorTopicName(processorId);
-        resolvedAction.getParameters().set(KafkaTopicAction.TOPIC_PARAM, new TextNode(connectorTopicName));
+        resolvedAction.getParameters().set(KafkaTopicAction.TOPIC_PARAM, new TextNode(gatewayConfiguratorService.getConnectorTopicName(processorId)));
+        resolvedAction.getParameters().set(KafkaTopicAction.CLIENT_ID, new TextNode(gatewayConfiguratorService.getClientId()));
+        resolvedAction.getParameters().set(KafkaTopicAction.CLIENT_SECRET, new TextNode(gatewayConfiguratorService.getClientSecret()));
+        resolvedAction.getParameters().set(KafkaTopicAction.BROKER_URL, new TextNode(gatewayConfiguratorService.getBootstrapServers()));
 
         return resolvedAction;
     }

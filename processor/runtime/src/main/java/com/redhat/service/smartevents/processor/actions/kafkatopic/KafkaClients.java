@@ -55,7 +55,15 @@ public class KafkaClients {
     @ApplicationScoped
     @Identifier("actions-out")
     Map<String, Object> outgoing() {
-        Action action = processorDTO.getDefinition().getRequestedAction();
+        Action action;
+        // if the original action is KafkaTopic then the parameters are in the requested action
+        if (processorDTO.getDefinition().getRequestedAction().getType().equals("kafka_topic_sink.0.1")) { // TODO: refactor check
+            action = processorDTO.getDefinition().getRequestedAction();
+        }
+        // if the resolved action is KafkaTopic then the parameters are in the resolved action
+        else {
+            action = processorDTO.getDefinition().getResolvedAction();
+        }
         return Map.<String, Object> ofEntries(
                 Map.entry("bootstrap.servers", action.getParameter(KafkaTopicAction.TOPIC_PARAM)),
                 Map.entry("asl.mechanism", "PLAIN"),
