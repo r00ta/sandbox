@@ -1,9 +1,7 @@
 package com.redhat.service.smartevents.processor.actions.kafkatopic;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -13,8 +11,8 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import com.redhat.service.smartevents.infra.models.dto.KafkaConnectionDTO;
 import com.redhat.service.smartevents.infra.models.dto.ProcessorDTO;
+import com.redhat.service.smartevents.infra.models.gateways.Action;
 
 import io.smallrye.common.annotation.Identifier;
 
@@ -57,15 +55,13 @@ public class KafkaClients {
     @ApplicationScoped
     @Identifier("actions-out")
     Map<String, Object> outgoing() {
-        Optional<KafkaConnectionDTO> outgoingConnection = processorDTO.parseKafkaOutgoingConnection();
-        return outgoingConnection.map(c -> Map.<String, Object> ofEntries(
-                Map.entry("bootstrap.servers", c.getBootstrapServers()),
+        Action action = processorDTO.getDefinition().getRequestedAction();
+        return Map.<String, Object> ofEntries(
+                Map.entry("bootstrap.servers", action.getParameter(KafkaTopicAction.TOPIC_PARAM)),
                 Map.entry("asl.mechanism", "PLAIN"),
                 Map.entry("security.protocol", "SASL_SSL"),
-                Map.entry("dead-letter-queue.topic", kafkaErrorTopic),
                 Map.entry("sasl.jaas.config",
                         String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=%s password=%s;",
-                                c.getClientId(), c.getClientSecret()))))
-                .orElse(Collections.emptyMap());
+                                action.getParameter(KafkaTopicAction.CLIENT_ID), action.getParameter(KafkaTopicAction.CLIENT_SECRET))));
     }
 }
