@@ -34,7 +34,7 @@ public class KafkaTopicActionInvokerBuilder implements KafkaTopicAction,
 
         Map<String, String> config = new HashMap<>();
         config.put("bootstrap.servers", brokerURL);
-        config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        config.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
         config.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         config.put("acks", "1");
         config.put("sasl.mechanism", "PLAIN");
@@ -42,7 +42,7 @@ public class KafkaTopicActionInvokerBuilder implements KafkaTopicAction,
         config.put("sasl.jaas.config", String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";", clientId, clientSecret));
 
         // use producer for interacting with Apache Kafka
-        KafkaProducer<String, String> producer = KafkaProducer.create(vertx, config);
+        KafkaProducer<Integer, String> producer = KafkaProducer.create(vertx, config);
 
         return new KafkaTopicActionInvoker(producer, processor, requiredTopic);
     }

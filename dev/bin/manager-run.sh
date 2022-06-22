@@ -13,7 +13,7 @@ SCRIPT_DIR_PATH=`dirname "${BASH_SOURCE[0]}"`
 
 export MANAGED_KAFKA_INSTANCE_NAME=rhose-local-development
 
-. "${SCRIPT_DIR_PATH}/configure.sh" kafka managed-connectors
+. "${SCRIPT_DIR_PATH}/configure.sh" kafka managed-connectors minikube-started
 
 bootstrap_server_host=$( getManagedKafkaBootstrapServerHost )
 admin_client_id=$( getManagedKafkaAdminSAClientId )
@@ -43,7 +43,7 @@ mvn \
   -Devent-bridge.rhoas.sso.mas.auth-server-url=https://identity.api.openshift.com/auth/realms/rhoas \
   -Devent-bridge.rhoas.sso.mas.client-id=${admin_client_id} \
   -Devent-bridge.rhoas.sso.mas.client-secret=${admin_client_secret} \
-  -Dminikubeip=kind-control-plane \
+  -Dminikubeip=${MINIKUBE_IP} \
   -Drhoas.ops-account.client-id=${ops_client_id} \
   -Dmanaged-connectors.namespace.id=${MANAGED_CONNECTORS_NAMESPACE_ID} \
   -Dmanaged-connectors.kafka.bootstrap.servers=${bootstrap_server_host} \

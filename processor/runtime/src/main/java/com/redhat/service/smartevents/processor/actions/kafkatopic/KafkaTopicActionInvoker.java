@@ -3,7 +3,7 @@ package com.redhat.service.smartevents.processor.actions.kafkatopic;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -24,9 +24,9 @@ public class KafkaTopicActionInvoker implements ActionInvoker {
 
     private final ProcessorDTO processor;
 
-    private final KafkaProducer<String, String> producer;
+    private final KafkaProducer<Integer, String> producer;
 
-    public KafkaTopicActionInvoker(KafkaProducer<String, String> producer, ProcessorDTO processor, String topic) {
+    public KafkaTopicActionInvoker(KafkaProducer<Integer, String> producer, ProcessorDTO processor, String topic) {
         this.producer = producer;
         this.topic = topic;
         this.processor = processor;
@@ -42,7 +42,7 @@ public class KafkaTopicActionInvoker implements ActionInvoker {
                 .map(th -> KafkaHeader.header(th.getKey(), th.getValue().getBytes(StandardCharsets.UTF_8)))
                 .collect(Collectors.toList());
 
-        KafkaProducerRecord<String, String> record = KafkaProducerRecord.create(topic, UUID.randomUUID().toString(), event).addHeaders(kafkaHeaders);
+        KafkaProducerRecord<Integer, String> record = KafkaProducerRecord.create(topic, new Random().nextInt(), event).addHeaders(kafkaHeaders);
         producer.send(record);
         LOG.info("Emitted CloudEvent to target topic '{}' for Action on Processor '{}' on Bridge '{}'", topic, processor.getId(), processor.getBridgeId());
     }
