@@ -13,7 +13,7 @@ SCRIPT_DIR_PATH=`dirname "${BASH_SOURCE[0]}"`
 
 export MANAGED_KAFKA_INSTANCE_NAME=rhose-local-development
 
-. "${SCRIPT_DIR_PATH}/configure.sh" kafka minikube-started managed-connectors
+. "${SCRIPT_DIR_PATH}/configure.sh" kafka managed-connectors minikube-started
 
 bootstrap_server_host=$( getManagedKafkaBootstrapServerHost )
 admin_client_id=$( getManagedKafkaAdminSAClientId )
