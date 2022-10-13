@@ -13,7 +13,10 @@ public class ResourceUtils {
     }
 
     public static RequestSpecification newRequest(Optional<String> token, String contentType) {
-        RequestSpecification requestSpec = given().contentType(contentType).when();
+        RequestSpecification requestSpec = given()
+                .log().all()
+                .contentType(contentType)
+                .when();
         if (token.isPresent()) {
             return requestSpec.auth().oauth2(token.get());
         } else {

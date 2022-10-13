@@ -16,7 +16,6 @@ public class BridgeResource {
     public static BridgeResponse addBridge(String token, String bridgeName, String cloudProvider, String region) {
         return addBridgeResponse(token, bridgeName, cloudProvider, region)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(202)
                 .extract()
                 .as(BridgeResponse.class);
@@ -25,7 +24,6 @@ public class BridgeResource {
     public static BridgeResponse addBridge(String token, InputStream bridgeRequest) {
         return addBridgeResponse(token, bridgeRequest)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(202)
                 .extract()
                 .as(BridgeResponse.class);
@@ -50,7 +48,6 @@ public class BridgeResource {
 
     public static BridgeResponse updateBridge(String token, String bridgeId, InputStream bridgeRequest) {
         return updateBridgeResponse(token, bridgeId, bridgeRequest).then()
-                .log().ifValidationFails()
                 .statusCode(202)
                 .extract()
                 .as(BridgeResponse.class);
@@ -65,7 +62,6 @@ public class BridgeResource {
         return ResourceUtils.newRequest(token, Constants.JSON_CONTENT_TYPE)
                 .get(BridgeUtils.MANAGER_URL + APIConstants.USER_API_BASE_PATH + bridgeId)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .extract()
                 .as(BridgeResponse.class);
@@ -79,7 +75,6 @@ public class BridgeResource {
     public static BridgeListResponse getBridgeList(String token) {
         return getBridgeListResponse(token)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .extract()
                 .as(BridgeListResponse.class);
@@ -93,7 +88,6 @@ public class BridgeResource {
     public static void deleteBridge(String token, String bridgeId) {
         deleteBridgeResponse(token, bridgeId)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(202);
     }
 

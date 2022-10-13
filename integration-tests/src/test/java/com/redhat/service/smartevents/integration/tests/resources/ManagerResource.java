@@ -11,7 +11,6 @@ public class ManagerResource {
         return ResourceUtils.newRequest(Optional.empty(), Constants.TEXT_PLAIN_CONTENT_TYPE)
                 .get(BridgeUtils.MANAGER_URL + Constants.METRICS_ENDPOINT)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .extract()
                 .asString();

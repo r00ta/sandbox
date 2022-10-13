@@ -14,7 +14,6 @@ public class WebhookPerformanceResource {
     public static <T extends Number> T getCountEventsReceived(String bridgeId, Class<T> clazz) {
         return getCountEventsReceivedResponse(bridgeId)
                 .then()
-                .log().ifValidationFails()
                 .statusCode(200)
                 .extract()
                 .body()
