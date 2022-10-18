@@ -1,4 +1,5 @@
 {
+
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -45,6 +46,7 @@
       "description": "Specify if SSL verification has to be disabled",
       "default": false
     }
+    
   },
   "required": [
     "endpoint",
