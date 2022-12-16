@@ -2,7 +2,6 @@ package com.redhat.service.smartevents.shard.operator.core.utils;
 
 import java.util.Set;
 
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.authorizationpolicy.AuthorizationPolicy;
 import com.redhat.service.smartevents.shard.operator.core.resources.knative.KnativeBroker;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
@@ -13,6 +12,7 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.monitoring.v1.ServiceMonitor;
+import io.istio.security.v1beta1.AuthorizationPolicy;
 import io.javaoperatorsdk.operator.api.config.informer.InformerConfiguration;
 import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext;
 import io.javaoperatorsdk.operator.processing.event.ResourceID;

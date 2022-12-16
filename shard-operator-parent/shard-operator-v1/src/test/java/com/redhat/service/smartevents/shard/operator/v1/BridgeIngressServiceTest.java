@@ -19,7 +19,6 @@ import com.redhat.service.smartevents.shard.operator.core.metrics.OperatorMetric
 import com.redhat.service.smartevents.shard.operator.core.providers.GlobalConfigurationsConstants;
 import com.redhat.service.smartevents.shard.operator.core.providers.IstioGatewayProvider;
 import com.redhat.service.smartevents.shard.operator.core.providers.TemplateProvider;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.authorizationpolicy.AuthorizationPolicy;
 import com.redhat.service.smartevents.shard.operator.core.resources.knative.KnativeBroker;
 import com.redhat.service.smartevents.shard.operator.v1.providers.CustomerNamespaceProvider;
 import com.redhat.service.smartevents.shard.operator.v1.resources.BridgeIngress;
@@ -31,6 +30,7 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.istio.security.v1beta1.AuthorizationPolicy;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
@@ -160,7 +160,7 @@ public class BridgeIngressServiceTest {
 
                     AuthorizationPolicy authorizationPolicy = fetchBridgeIngressAuthorizationPolicy(dto);
                     assertThat(authorizationPolicy).isNotNull();
-                    assertThat(authorizationPolicy.getSpec().getAction().length()).isGreaterThan(0);
+                    assertThat(authorizationPolicy.getSpec().getAction()).isNotNull();
                     assertThat(authorizationPolicy.getSpec().getRules().get(0).getTo().size()).isGreaterThan(0);
                     assertThat(authorizationPolicy.getSpec().getRules().get(0).getTo().get(0).getOperation().getPaths().get(0).length()).isGreaterThan(0);
                     assertThat(authorizationPolicy.getSpec().getRules().get(0).getTo().get(0).getOperation().getMethods().get(0).length()).isGreaterThan(0);

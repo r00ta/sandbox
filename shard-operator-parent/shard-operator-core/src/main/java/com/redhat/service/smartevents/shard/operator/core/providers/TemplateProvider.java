@@ -1,9 +1,5 @@
 package com.redhat.service.smartevents.shard.operator.core.providers;
 
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.authorizationpolicy.AuthorizationPolicy;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.gateway.Gateway;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.requestauthentication.RequestAuthentication;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.virtualservice.VirtualService;
 import com.redhat.service.smartevents.shard.operator.core.resources.knative.KnativeBroker;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
@@ -15,6 +11,10 @@ import io.fabric8.kubernetes.api.model.networking.v1.Ingress;
 import io.fabric8.kubernetes.client.CustomResource;
 import io.fabric8.openshift.api.model.Route;
 import io.fabric8.openshift.api.model.monitoring.v1.ServiceMonitor;
+import io.istio.networking.v1alpha3.VirtualService;
+import io.istio.networking.v1beta1.Gateway;
+import io.istio.security.v1beta1.AuthorizationPolicy;
+import io.istio.security.v1beta1.RequestAuthentication;
 
 public interface TemplateProvider {
     Secret loadBridgeExecutorSecretTemplate(HasMetadata resource, TemplateImportConfig config);

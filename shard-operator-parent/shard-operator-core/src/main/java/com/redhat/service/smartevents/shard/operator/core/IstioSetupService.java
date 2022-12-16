@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.redhat.service.smartevents.shard.operator.core.providers.TemplateProvider;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.gateway.Gateway;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.requestauthentication.RequestAuthentication;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.virtualservice.VirtualService;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.istio.networking.v1alpha3.VirtualService;
+import io.istio.networking.v1beta1.Gateway;
+import io.istio.security.v1beta1.RequestAuthentication;
 import io.quarkus.runtime.StartupEvent;
 
 @ApplicationScoped

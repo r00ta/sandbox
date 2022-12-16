@@ -88,6 +88,13 @@
       <artifactId>quarkus-test-openshift-client</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>io.fabric8</groupId>
+      <artifactId>generator-annotations</artifactId>
+      <version>${version.io.fabric8}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <testResources>
@@ -127,6 +134,22 @@
           <!-- Don't reuse VM forks for different test classes, seems that Quarkus classloader is not properly garbaged, causing OOM. -->
           <reuseForks>false</reuseForks>
         </configuration>
+      </plugin>
+      <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>java-generator-maven-plugin</artifactId>
+          <version>${version.io.fabric8-generator}</version>
+          <executions>
+              <execution>
+                  <phase>generate-sources</phase>
+                  <goals>
+                      <goal>generate</goal>
+                  </goals>
+              </execution>
+          </executions>
+          <configuration>
+              <source>${basedir}/src/main/resources/manifests</source>
+          </configuration>
       </plugin>
     </plugins>
   </build>

@@ -18,8 +18,6 @@ import com.redhat.service.smartevents.shard.operator.core.providers.GlobalConfig
 import com.redhat.service.smartevents.shard.operator.core.providers.IstioGatewayProvider;
 import com.redhat.service.smartevents.shard.operator.core.providers.TemplateImportConfig;
 import com.redhat.service.smartevents.shard.operator.core.providers.TemplateProvider;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.authorizationpolicy.AuthorizationPolicy;
-import com.redhat.service.smartevents.shard.operator.core.resources.istio.authorizationpolicy.AuthorizationPolicySpecRuleWhen;
 import com.redhat.service.smartevents.shard.operator.core.resources.knative.KnativeBroker;
 import com.redhat.service.smartevents.shard.operator.core.utils.LabelsBuilder;
 import com.redhat.service.smartevents.shard.operator.v1.providers.CustomerNamespaceProvider;
@@ -29,6 +27,9 @@ import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.istio.security.v1beta1.AuthorizationPolicy;
+import io.istio.security.v1beta1.AuthorizationPolicySpec;
+import io.istio.security.v1beta1.authorizationpolicyspec.rules.When;
 
 @ApplicationScoped
 public class BridgeIngressServiceImpl implements BridgeIngressService {
@@ -222,13 +223,15 @@ public class BridgeIngressServiceImpl implements BridgeIngressService {
          */
         expected.getMetadata().setNamespace(istioGatewayProvider.getIstioGatewayService().getMetadata().getNamespace());
 
-        expected.getSpec().setAction("ALLOW");
+        expected.getSpec().setAction(AuthorizationPolicySpec.Action.ALLOW);
         expected.getSpec().getRules().forEach(x -> x.getTo().get(0).getOperation().getPaths().set(0, path));
 
-        AuthorizationPolicySpecRuleWhen userAuthPolicy = new AuthorizationPolicySpecRuleWhen("request.auth.claims[account_id]", Collections.singletonList(bridgeIngress.getSpec().getCustomerId()));
-        AuthorizationPolicySpecRuleWhen serviceAccountsAuthPolicy = new AuthorizationPolicySpecRuleWhen("request.auth.claims[rh-user-id]",
-                Arrays.asList(bridgeIngress.getSpec().getCustomerId(),
-                        globalConfigurationsProvider.getSsoWebhookClientAccountId()));
+        When userAuthPolicy = new When();
+        userAuthPolicy.setKey("request.auth.claims[account_id]");
+        userAuthPolicy.setValues(Collections.singletonList(bridgeIngress.getSpec().getCustomerId()));
+        When serviceAccountsAuthPolicy = new When();
+        serviceAccountsAuthPolicy.setKey("request.auth.claims[rh-user-id]");
+        serviceAccountsAuthPolicy.setValues(Arrays.asList(bridgeIngress.getSpec().getCustomerId(), globalConfigurationsProvider.getSsoWebhookClientAccountId()));
 
         expected.getSpec().getRules().get(0).setWhen(Collections.singletonList(userAuthPolicy));
         expected.getSpec().getRules().get(1).setWhen(Collections.singletonList(serviceAccountsAuthPolicy));
